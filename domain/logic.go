@@ -2,7 +2,6 @@ package domain
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/teris-io/shortid"
