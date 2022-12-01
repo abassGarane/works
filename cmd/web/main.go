@@ -39,6 +39,7 @@ func main() {
 	}
 	// service
 	service := domain.NewJobService(repo)
+
 	// application
 	handler := api.NewJobHandler(service)
 	app := fiber.New()

@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/abassGarane/work/domain"
@@ -30,6 +29,7 @@ func newClient(mongoURL string, timeout int, ctx context.Context) (*mongo.Client
 	}
 	return client, err
 }
+
 func NewMongoRepository(mongoURL, database string, timeout int, ctx context.Context) (domain.JobRepository, error) {
 	client, err := newClient(mongoURL, timeout, ctx)
 	if err != nil {

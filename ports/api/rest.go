@@ -63,6 +63,7 @@ func (j *jobHandler) UpdateJob(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(job)
 }
+
 func (j *jobHandler) AddJob(c *fiber.Ctx) error {
 	job := &domain.Job{}
 	rawBody := c.Body()
@@ -85,6 +86,7 @@ func (j *jobHandler) AddJob(c *fiber.Ctx) error {
 	}
 	return c.SendStatus(fiber.StatusOK)
 }
+
 func (j *jobHandler) DeleteJob(c *fiber.Ctx) error {
 	id := c.Params("id")
 	job, err := j.service.DeleteJob(id)
