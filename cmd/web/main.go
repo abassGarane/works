@@ -17,7 +17,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
+	// "github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
@@ -28,7 +28,7 @@ func main() {
 	// mongoDB := flag.String("MONGO_DB", "work", "Mongo db string")
 
 	//Repo
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Second*180))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Hour*180))
 	defer cancel()
 	mongoURL := os.Getenv("MONGO_URL")
 	mongoDB := os.Getenv("MONGO_DB")
@@ -48,9 +48,16 @@ func main() {
 		// For more options, see the Config section
 		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}​\n",
 	}))
-	app.Use(limiter.New())
+	// app.Use(limiter.New())
 	app.Use(cache.New())
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
+	}))
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Content-Type", "application/json")
+		return c.Next()
+	})
 	// endpoints
 	app.Get("/:id", handler.Get)
 	app.Get("/", handler.GetAll)

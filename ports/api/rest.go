@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/abassGarane/work/domain"
 	"github.com/gofiber/fiber/v2"
@@ -31,12 +32,15 @@ func (j *jobHandler) Get(c *fiber.Ctx) error {
 
 func (j *jobHandler) GetAll(c *fiber.Ctx) error {
 	jobs, err := j.service.GetAll()
+	log.Println("Request recieved from ", c.OriginalURL(), " ", c.Method())
 	if len(jobs) == 0 {
 		fmt.Println("No jobs found")
-		return c.Status(fiber.ErrNotFound.Code).JSON(fiber.Map{
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"message": "Jobs not found",
 		})
 	}
+	c.Set("Access-Control-Allow-Origin", "*")
+	c.Set("Access-Control-Allow-Headers", "Content-Type")
 	if err != nil {
 		return c.Status(fiber.ErrNotFound.Code).JSON(fiber.Map{
 			"message": "Jobs not found",
@@ -96,4 +100,12 @@ func (j *jobHandler) DeleteJob(c *fiber.Ctx) error {
 		})
 	}
 	return c.Status(fiber.StatusAccepted).JSON(job)
+}
+
+// func middleware for cors
+func (j *jobHandler) SetCorsHeaders(c *fiber.Ctx) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		c.Set("Access-Control-Allow-Origin", "*")
+		return c.Next()
+	}
 }
