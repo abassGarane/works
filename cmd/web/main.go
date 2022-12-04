@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"strconv"
+	// "strconv"
 	"syscall"
 	"time"
 
@@ -21,17 +22,25 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
-func main() {
-	// mongoURL := flag.String("MONGO_URL", "mongodb://root:root@localhost:27017/work", "Mongodb connection string")
-	// mongoTimeout := flag.Int("MONGO_TIMEOUT", 10, "Mongo timeout")
-	// mongoDB := flag.String("MONGO_DB", "work", "Mongo db string")
+var (
+	mongoURL     string
+	mongoDB      string
+	mongoTimeout int
+)
 
+func init() {
+	flag.StringVar(&mongoURL, "MONGO_URL", "mongodb://root:root@localhost:27017", "Mongodb connection string")
+	flag.IntVar(&mongoTimeout, "MONGO_TIMEOUT", 10, "Mongo timeout")
+	flag.StringVar(&mongoDB, "MONGO_DB", "works", "Mongo db string")
+}
+
+func main() {
 	//Repo
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Hour*180))
 	defer cancel()
-	mongoURL := os.Getenv("MONGO_URL")
-	mongoDB := os.Getenv("MONGO_DB")
-	mongoTimeout, _ := strconv.Atoi(os.Getenv("MONGO_TIMEOUT"))
+	// mongoURL := os.Getenv("MONGO_URL")
+	// mongoDB := os.Getenv("MONGO_DB")
+	// mongoTimeout, _ := strconv.Atoi(os.Getenv("MONGO_TIMEOUT"))
 	repo, err := mongo.NewMongoRepository(mongoURL, mongoDB, mongoTimeout, ctx)
 	if err != nil {
 		log.Fatal(err)
