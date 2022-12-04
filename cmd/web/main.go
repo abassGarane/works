@@ -38,9 +38,6 @@ func main() {
 	//Repo
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Hour*180))
 	defer cancel()
-	// mongoURL := os.Getenv("MONGO_URL")
-	// mongoDB := os.Getenv("MONGO_DB")
-	// mongoTimeout, _ := strconv.Atoi(os.Getenv("MONGO_TIMEOUT"))
 	repo, err := mongo.NewMongoRepository(mongoURL, mongoDB, mongoTimeout, ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -71,6 +68,7 @@ func main() {
 	app.Get("/", handler.GetAll)
 	app.Post("/", handler.AddJob)
 	app.Patch("/:id", handler.UpdateJob)
+	app.Delete("/:id", handler.DeleteJob)
 
 	//app init
 	errChan := make(chan error, 2)
